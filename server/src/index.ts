@@ -2,7 +2,6 @@ import "reflect-metadata";
 import express from "express";
 import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
-
 import { openDBConnection } from "./utils/database";
 import config from "./constants";
 import { createSchema } from "./utils/createSchema";
