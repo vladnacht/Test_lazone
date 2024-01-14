@@ -9,7 +9,7 @@ import { createSchema } from "./utils/createSchema";
 const main = async () => {
   let retries = Number(config.dbConnectionRetries);
   const retryTimeout = Number(config.timeoutBeforeRetry);
-
+  
   while (retries) {
     try {
       const conn = await openDBConnection();
@@ -23,25 +23,30 @@ const main = async () => {
       await new Promise((res) => setTimeout(res, retryTimeout));
     }
   }
-
+  
   const app = express();
-
+  
+  
   //set up cors with express cors middleware
   app.use(
-    cors({ origin: [config.frontend_url, config.studio_apollo_graphql_url] })
-  );
+      cors({ origin: [config.frontend_url, config.studio_apollo_graphql_url],
+        credentials: true
+      })
+      );
+      
+      const apolloServer = new ApolloServer({
+        schema: await createSchema(),
+        context: (({ req }: any) => ({ req }))
+      });
+    
+      await apolloServer.start();
+      apolloServer.applyMiddleware({ app, cors: false });
 
-  const apolloServer = new ApolloServer({
-    schema: await createSchema(),
-  });
-
-  await apolloServer.start();
-  apolloServer.applyMiddleware({ app, cors: false });
-
-  app.listen(config.port, () => {
-    console.log(`server started on port ${config.port}`);
-  });
-};
+      app.listen(config.port, () => {
+        console.log(`server started on port ${config.port}`);
+      });
+      
+  };
 
 main().catch((err) => {
   console.log(err);
