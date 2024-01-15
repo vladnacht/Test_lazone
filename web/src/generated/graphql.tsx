@@ -18,11 +18,16 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   register: User;
+  login: User
 };
 
 
 export type MutationRegisterArgs = {
   input: UserInput;
+};
+
+export type MutationLoginArgs = {
+  input: UserLogin;
 };
 
 export type Query = {
@@ -41,27 +46,44 @@ export type User = {
   email: Scalars['String'];
   id: Scalars['Int'];
   updatedAt: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
   username: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type UserInput = {
   email: Scalars['String'];
   username: Scalars['String'];
+  password: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+};
+
+export type UserLogin = {
+  username: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type RegisterMutationVariables = Exact<{
   input: UserInput;
 }>;
 
+export type LoginMutationVariables = Exact<{
+  input: UserLogin;
+}>;
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'User', email: string, username: string, createdAt: string, updatedAt: string } };
+
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'User', email: string, username: string, firstName: string, lastName: string, createdAt: string, updatedAt: string } };
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'User', email: string, username: string, firstName: string, lastName: string, password: string, createdAt: string, updatedAt: string } };
 
 export type GetByUsernameQueryVariables = Exact<{
   username: Scalars['String'];
 }>;
 
 
-export type GetByUsernameQuery = { __typename?: 'Query', getByUsername?: { __typename?: 'User', id: number, username: string, email: string, createdAt: string, updatedAt: string } | null };
+export type GetByUsernameQuery = { __typename?: 'Query', getByUsername?: { __typename?: 'User', id: number, username: string, email: string, firstName: string, lastName: string, createdAt: string, updatedAt: string } | null };
 
 
 export const RegisterDocument = gql`
@@ -69,6 +91,9 @@ export const RegisterDocument = gql`
   register(input: $input) {
     email
     username
+    firstName
+    lastName
+    password
     createdAt
     updatedAt
   }
@@ -78,12 +103,32 @@ export const RegisterDocument = gql`
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
+
+
+export const LoginDocument = gql`
+  mutation Login($input: UserLogin!) {
+  login(input: $input) {
+    id
+    username
+    email
+    createdAt
+    updatedAt
+    password
+  }
+}
+    `;
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+
 export const GetByUsernameDocument = gql`
     query GetByUsername($username: String!) {
   getByUsername(username: $username) {
     id
     username
     email
+    firstName
+    lastName
     createdAt
     updatedAt
   }
