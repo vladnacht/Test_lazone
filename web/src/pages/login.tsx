@@ -38,7 +38,7 @@ const Login: NextPage<ILoginProps> = () => {
                          setLogOn(true)
                          setTimeout(() => {
                              router.push(`user/${log.username}`)
-                         }, 1000)
+                         }, 500)
                         } else if (err){
                          setErrShow(true)
                         }
