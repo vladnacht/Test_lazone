@@ -1,5 +1,5 @@
 import { Length, IsEmail } from "class-validator";
-import { InputType, Field } from "type-graphql";
+import { InputType, Field} from "type-graphql";
 
 @InputType()
 export class UserInput {
@@ -35,5 +35,18 @@ export class UserLogin {
 
   @Field(() => String)
   password!: string;
+
+}
+
+@InputType()
+export class QuestionInput {
+
+  @Field(() => String)
+  @Length(1, 255)
+  film: string;
+
+  @Field(() => String)
+  @Length(1, 255)
+  acteur: string;
 
 }

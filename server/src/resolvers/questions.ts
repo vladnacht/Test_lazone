@@ -1,7 +1,8 @@
-import { Resolver, Query } from "type-graphql"
+import { Resolver, Query, Mutation, Arg } from "type-graphql"
 import { Questions } from "../entities/Questions"
 import axios from "axios"
 import * as bcrypt from "bcryptjs"
+import { QuestionInput } from "../types"
 
 @Resolver()
 export class QuestionResolver{
@@ -90,6 +91,17 @@ export class QuestionResolver{
         const combinearray = mergeAndShuffle(correctActorsQuestions, incorrectActorsQuestions)
 
         return combinearray;
+    }
+
+    @Mutation(() => [Boolean])
+    async correctquestions(@Arg("answers", () => [QuestionInput]) answers: QuestionInput[]): Promise<Boolean[]> {
+        const tablequestion = await Questions.find();
+
+            let correct = answers.map((answer) => {
+                return tablequestion.some(question => question.acteur === answer.acteur && question.film === answer.film);
+            });
+
+        return correct;
     }
 
 }
