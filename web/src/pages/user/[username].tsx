@@ -3,7 +3,8 @@ import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import { useGetByUsernameQuery } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Wrap, WrapItem, Button } from "@chakra-ui/react";
+import { Wrapper } from "../../components/Wrapper";
 
 const User: NextPage = () => {
   const router = useRouter();
@@ -29,15 +30,24 @@ const User: NextPage = () => {
     );
   } else {
     return (
-      <Flex
-        alignItems="center"
-        h="100vh"
-        justifyContent="center"
-        fontWeight="bold"
-        fontSize="5xl"
-      >
-        Welcome {`${firstname} ${lastname}`}
-      </Flex>
+      <Wrapper variant="small">
+        <Flex
+          alignItems="center"
+          justifyContent="center"
+          fontWeight="bold"
+          fontSize="5xl"
+          flexWrap="wrap"
+        >
+          Welcome {`${firstname} ${lastname}`}
+          <Wrap>
+            <WrapItem>
+                <Button colorScheme='teal' onClick={() => {
+                  router.push("quiz")
+                }}>Play</Button>
+            </WrapItem>
+          </Wrap>
+        </Flex>
+      </Wrapper>
     );
   }
 };
