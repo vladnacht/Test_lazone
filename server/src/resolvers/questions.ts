@@ -54,4 +54,42 @@ export class QuestionResolver{
         }
         return await Questions.find();
     }
+
+    @Query(() => [Questions], { nullable: true })
+    async getQuestion(): Promise<Questions[] | undefined> {
+        const allQuestions = await Questions.find();
+        if (!allQuestions || allQuestions.length === 0) {
+            return undefined;
+        }
+
+        const shuffledQuestions = allQuestions.sort(() => 0.5 - Math.random());
+
+        const halfLength = Math.floor(allQuestions.length / 2);
+        const correctActorsQuestions = shuffledQuestions.slice(0, halfLength);
+        const incorrectActorsQuestions = shuffledQuestions.slice(halfLength);
+
+        incorrectActorsQuestions.forEach((question, index) => {
+            const swapWithIndex = (index + halfLength) % allQuestions.length;
+            question.acteur = allQuestions[swapWithIndex].acteur;
+            question.acteurImg = allQuestions[swapWithIndex].acteurImg;
+        });
+
+        const shuffle = (array: any[]) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+        };
+
+        const mergeAndShuffle = (array1: any[], array2: any[]) => {
+        const mergedArray = array1.concat(array2);
+        return shuffle(mergedArray);
+        };
+
+        const combinearray = mergeAndShuffle(correctActorsQuestions, incorrectActorsQuestions)
+
+        return combinearray;
+    }
+
 }
