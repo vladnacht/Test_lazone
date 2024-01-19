@@ -14,33 +14,33 @@ interface IRegisterProps {}
 const Register: NextPage<IRegisterProps> = () => {
   const router = useRouter();
   const [, register] = useRegisterMutation();
+  const init ={ username: "", email: "", password: "", firstName: "", lastName: ""  }
   const [show, setShow] = React.useState(false)
   const handleClick = () => setShow(!show)
   const [signup, setSignUp] = React.useState(false)
   const [errsignup, setErrSignUp] = React.useState(false)
   const [con, setCon] = React.useState(false);
+  const handleSubmit = async(val: any) => {
+    try {
+      const response = await register({ input: val });
+      const user = response.data?.register;
+      const err = response.error?.message
+      if (user) {
+          setSignUp(true)
+          router.push(`user/${user.username}`);
+      } else if (err) {
+        setErrSignUp(true)
+      }
+    } catch (error) {
+      setCon(true)
+    }
+  }
   
   return (
     <Wrapper variant="small">
       <Formik
-        initialValues={{ username: "", email: "", password: "", firstName: "", lastName: ""  }}
-        onSubmit={async (values) => {
-          try {
-            const response = await register({ input: values });
-            const user = response.data?.register;
-            const err = response.error?.message
-            if (user) {
-              setSignUp(true)
-              setTimeout(() => {
-                router.push(`user/${user.username}`);
-              }, 1000);
-            } else if (err) {
-              setErrSignUp(true)
-            }
-          } catch (error) {
-            setCon(true)
-          }
-        }}
+        initialValues={init}
+        onSubmit={(values) => handleSubmit(values)}
          
       >
         {({ isSubmitting }) => (
@@ -50,7 +50,7 @@ const Register: NextPage<IRegisterProps> = () => {
                     name="username"
                     placeholder="username"
                     label="Username"
-                    required
+                    type="text"
                   />
                 </Box>
                 <Box mt={4}>
@@ -58,6 +58,7 @@ const Register: NextPage<IRegisterProps> = () => {
                     name="lastName"
                     label="Lastname"
                     placeholder="Enter your lastname"
+                    type="text"
                   />
                 </Box>
                 <Box mt={4}>
@@ -65,6 +66,7 @@ const Register: NextPage<IRegisterProps> = () => {
                     name="firstName"
                     label="Firstname"
                     placeholder="Enter your firstname"
+                    type="text"
                   />
                 </Box>
                   <Box mt={4}>
@@ -73,7 +75,6 @@ const Register: NextPage<IRegisterProps> = () => {
                       placeholder="email"
                       label="Email"
                       type="email"
-                      required
                     />
                   </Box>
                   <Box mt={4}>
@@ -100,7 +101,7 @@ const Register: NextPage<IRegisterProps> = () => {
                   signup ?
                   <Alert status='success'>
                       <AlertIcon />
-                      Connexion réussie
+                      Inscription réussie
                   </Alert>
                   : errsignup ?
                   <Alert status='error'>

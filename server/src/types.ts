@@ -49,4 +49,8 @@ export class QuestionInput {
   @Length(1, 255)
   acteur: string;
 
+  @Field(() => Boolean)
+  @Length(1, 255)
+  isChoice: boolean;
+
 }

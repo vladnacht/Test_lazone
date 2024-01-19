@@ -18,7 +18,8 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   register: User;
-  login: User
+  login: User;
+  // correctquestions: Questions
 };
 
 
@@ -33,6 +34,7 @@ export type MutationLoginArgs = {
 export type Query = {
   __typename?: 'Query';
   getByUsername?: Maybe<User>;
+  getQuestion?: Maybe<Questions>;
 };
 
 
@@ -50,6 +52,19 @@ export type User = {
   lastName: Scalars['String'];
   username: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type Questions = {
+  __typename?: 'Questions',
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  id: Scalars['Int'];
+  questionhash: Scalars['String'];
+  filmImg: Scalars['String'],
+  film: Scalars['String'],
+  acteur: Scalars['String'],
+  acteurImg: Scalars['String']
+
 };
 
 export type UserInput = {
@@ -85,6 +100,7 @@ export type GetByUsernameQueryVariables = Exact<{
 
 export type GetByUsernameQuery = { __typename?: 'Query', getByUsername?: { __typename?: 'User', id: number, username: string, email: string, firstName: string, lastName: string, createdAt: string, updatedAt: string } | null };
 
+export type GetQuestion = { __typename?: 'Query', getQuestion?: { __typename?: 'Questions', id: number, questionhash: string, film: string, filmImg: string, acteur: string, acteurImg: string } | null };
 
 export const RegisterDocument = gql`
     mutation Register($input: UserInput!) {
@@ -135,6 +151,22 @@ export const GetByUsernameDocument = gql`
 }
     `;
 
+export const GetAllQuestion = gql`
+  query GetQuestion {
+  getQuestion {
+    questionhash
+    film
+    filmImg
+    acteur
+    acteurImg
+  }
+}
+`;
+
 export function useGetByUsernameQuery(options: Omit<Urql.UseQueryArgs<GetByUsernameQueryVariables>, 'query'>) {
   return Urql.useQuery<GetByUsernameQuery>({ query: GetByUsernameDocument, ...options });
 };
+
+export function useGetAllQuestion() {
+  return Urql.useQuery<GetQuestion>({ query: GetAllQuestion });
+}

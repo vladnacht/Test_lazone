@@ -42,7 +42,7 @@ const User: NextPage = () => {
           <Wrap>
             <WrapItem>
                 <Button colorScheme='teal' onClick={() => {
-                  router.push("quiz")
+                  router.push("play")
                 }}>Play</Button>
             </WrapItem>
           </Wrap>

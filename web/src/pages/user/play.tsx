@@ -5,22 +5,27 @@ import { Wrapper } from "../../components/Wrapper";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useCountdown } from "../../components/useCountdown";
 import { Form, Formik } from "formik";
-import { CircularProgress, CircularProgressLabel, Flex, Box, Button, Spacer, Heading, Center } from "@chakra-ui/react"
+import { CircularProgress, CircularProgressLabel, Box, Button, Spacer, Heading } from "@chakra-ui/react"
+import { useGetAllQuestion } from "../../generated/graphql";
 
 const Quiz: NextPage = () => {
 //   const router = useRouter();
 const { seconds } = useCountdown(60)
+const [{ data }] = useGetAllQuestion();
+
+const info = data?.getQuestion
+console.log("info :", info);
+
+
+const handleResponse = (e:) => {
+
+} 
 
   return (
     <Wrapper variant="small">
-
         <Formik
             initialValues={{ answers: {} }}
-            onSubmit={
-                async(values) => {
-                    console.log("Values", values);
-                }
-            }
+            onSubmit={(e)=> handleResponse(e)}
         >
             {
                 ({isSubmitting}) => (
@@ -37,7 +42,6 @@ const { seconds } = useCountdown(60)
                         }}>
                             Cet acteur a t-il joué dans ce film ?
                         </Heading>
-                        <Flex>
                             <Box p='4'>
                                 <Button colorScheme='green.500'>Yes</Button>
                             </Box>
@@ -45,7 +49,6 @@ const { seconds } = useCountdown(60)
                             <Box p='4'>
                                 <Button colorScheme='red.500'>No</Button>
                             </Box>
-                        </Flex>
                     </Form>
                 )
             }

@@ -93,15 +93,28 @@ export class QuestionResolver{
         return combinearray;
     }
 
+    // @Mutation(() => [Boolean])
+    // async correctquestions(@Arg("answers", () => [QuestionInput]) answers: QuestionInput[]): Promise<Boolean[]> {
+    //     const tablequestion = await Questions.find();
+
+    //         let correct = answers.map((answer) => {
+    //             return tablequestion.some(question => question.acteur === answer.acteur && question.film === answer.film);
+    //         });
+
+    //     return correct;
+    // }
     @Mutation(() => [Boolean])
-    async correctquestions(@Arg("answers", () => [QuestionInput]) answers: QuestionInput[]): Promise<Boolean[]> {
+    async correctQuestions(@Arg("answers", () => [QuestionInput]) answers: QuestionInput[]): Promise<Boolean[]> {
         const tablequestion = await Questions.find();
 
-            let correct = answers.map((answer) => {
-                return tablequestion.some(question => question.acteur === answer.acteur && question.film === answer.film);
-            });
+        let correct = answers.map((answer) => {
+            const matchingQuestion = tablequestion.some(question => question.acteur === answer.acteur && question.film === answer.film);
+            const isCorrect = matchingQuestion && matchingQuestion === answer.isChoice ? true : false;
+            return isCorrect;
+        });
 
         return correct;
     }
+
 
 }

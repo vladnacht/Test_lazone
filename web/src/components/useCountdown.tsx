@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
-export const useCountdown = (length: number) => {
-    const [seconds, setSeconds] = useState(length);
+export const useCountdown = (sec: number) => {
+    const [seconds, setSeconds] = useState(sec);
     
-    useEffect(() => {
+    useMemo(() => {
         const timeoutId = setTimeout(() => {
             setSeconds((prevSeconds) => 
                 prevSeconds > 0 ? prevSeconds - 1 : prevSeconds, 
@@ -11,7 +11,6 @@ export const useCountdown = (length: number) => {
         }, 1000);
 
         return () => clearTimeout(timeoutId)
-
     }, [seconds]);
 
     return { seconds };

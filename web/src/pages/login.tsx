@@ -2,10 +2,11 @@ import React from 'react'
 import {
     Alert,
   AlertIcon,
-  FormControl
+  FormControl,
+  FormErrorMessage
 } from '@chakra-ui/react'
 import { NextPage } from 'next'
-import { Form, Formik } from 'formik'
+import { Form, Formik, Field } from 'formik'
 import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../utils/createUrqlClient'
 import { Wrapper } from '../components/Wrapper'
@@ -17,6 +18,7 @@ import { useLoginMutation } from '../generated/graphql'
 interface ILoginProps {}
 
 const Login: NextPage<ILoginProps> = () => {
+    const init = { username: "", password: "" }
     const [show, setShow] = React.useState(false)
     const handleClick = () => setShow(!show)
     const router = useRouter();
@@ -25,27 +27,35 @@ const Login: NextPage<ILoginProps> = () => {
     const [logon, setLogOn] = React.useState(false)
     const [con, setCon] = React.useState(false)
 
+    const validateInput = (valid: any) => {
+        let err
+        if (!valid) {
+            err = "This case is required";
+        }
+        return err;
+    }
+
+    const handleLogin = async (e: any) => {
+        try {
+            const response = await login({ input: e })
+            const log = response.data?.login
+            const err = response.error?.message
+            if (log) {
+                setLogOn(true)
+                router.push(`user/${log.username}`)
+            } else if (err){
+                setErrShow(true)
+            }
+        } catch (error) {
+            setCon(true)
+        }
+    }
+
     return (
         <Wrapper variant="small">
             <Formik
-                initialValues={{ username: "", password: "" }}
-                onSubmit={async(values) => {
-                    try {
-                        const response = await login({ input: values })
-                        const log = response.data?.login
-                        const err = response.error?.message
-                        if (log) {
-                         setLogOn(true)
-                         setTimeout(() => {
-                             router.push(`user/${log.username}`)
-                         }, 500)
-                        } else if (err){
-                         setErrShow(true)
-                        }
-                    } catch (error) {
-                        setCon(true)
-                    }
-                }}
+                initialValues={init}
+                onSubmit={async(values) => handleLogin(values)}
             >
                 {
                     ({isSubmitting}) => (
