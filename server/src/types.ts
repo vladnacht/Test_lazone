@@ -50,7 +50,6 @@ export class QuestionInput {
   acteur: string;
 
   @Field(() => Boolean)
-  @Length(1, 255)
   isChoice: boolean;
 
 }
